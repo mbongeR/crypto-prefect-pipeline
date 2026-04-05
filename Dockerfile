@@ -1,17 +1,14 @@
 # Use the official Python image
 FROM python:3.12-slim
 
-# Install system dependencies 
+# Install system dependencies (git)
 RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
 
-# Set the working directory inside the container
+# Set the working directory
 WORKDIR /app
 
-# Copy the requirements file into the container
-COPY requirements.txt .
+# FORCING the installation directly so Docker cannot ignore it
+RUN pip install --no-cache-dir prefect prefect-email httpx
 
-# Install the required packages with a longer timeout
-RUN pip install --default-timeout=100 --no-cache-dir -r requirements.txt
-
-# The command to start the worker when the container boots up
+# Start the worker
 CMD ["prefect", "worker", "start", "--pool", "my-local-pool"]
