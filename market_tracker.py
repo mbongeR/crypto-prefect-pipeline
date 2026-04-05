@@ -75,5 +75,5 @@ if __name__ == "__main__":
     ).deploy(
         name="crypto-tracker-deployment",
         work_pool_name="my-local-pool", 
-        interval=timedelta(minutes=2)
+        interval=timedelta(minutes=15)
     )
