@@ -3,13 +3,13 @@ import asyncio
 from prefect import flow, task
 from datetime import datetime, timedelta
 
-# 1. Import the Prefect email tools
+# Import the Prefect email tools
 from prefect_email import EmailServerCredentials, email_send_message
 
 # Our list of coins
 COINS = ["bitcoin", "ethereum", "solana", "cardano", "ripple", "polkadot"]
 
-# 2. Define our alert function that runs ONLY if the flow crashes
+# Define our alert function that runs ONLY if the flow crashes
 def send_failure_alert(flow, flow_run, state):
     print("🚨 Flow crashed! Sending email alert...")
     
@@ -55,19 +55,15 @@ def analyze_market(market_data: dict):
         
     print("-----------------------------\n")
 
-# 3. Attach the on_failure hook to your flow
+# Attach the on_failure hook to your flow
 @flow(name="Live Crypto Market Tracker", log_prints=True, on_failure=[send_failure_alert])
 def market_tracker_flow():
-    
-    # 4. INTENTIONAL CRASH TO TEST THE EMAIL ALERT:
-    raise ValueError("Testing my new email alert system!")
-    
     market_prices = fetch_all_prices(COINS)
     analyze_market(market_prices)
 
 if __name__ == "__main__":
     market_tracker_flow.from_source(
-        source=".", 
+        source="https://github.com/mbongeR/crypto-prefect-pipeline.git", 
         entrypoint="market_tracker.py:market_tracker_flow" 
     ).deploy(
         name="crypto-tracker-deployment",
